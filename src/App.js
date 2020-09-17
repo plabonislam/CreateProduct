@@ -8,6 +8,8 @@ import { fabric } from "fabric";
 function App() {
   let canvRef = useRef(null);
 
+
+// for changing color
   function mycolor(e) {
     console.log("bhaiiiiiiiii");
     console.log(e.target.value);
@@ -15,9 +17,11 @@ function App() {
       e.target.value;
   }
 
+  //creating canvas reference
   let canvas = new fabric.Canvas(canvRef.current);
-  console.log(canvas, "canvasssssssss");
-  async function myfun(e) {
+  
+  //uploading image
+  async function imageUpload(e) {
     var reader = new FileReader();
     reader.onload = function (event) {
       var imgObj = new Image();
@@ -34,11 +38,11 @@ function App() {
         canvas.centerObject(image);
         canvas.add(image);
         canvas.renderAll();
+        console.log("last");
       };
     };
     reader.readAsDataURL(e.target.files[0]);
-    };
-  
+  }
 
   //upload image
 
@@ -63,7 +67,6 @@ function App() {
   //   };
   //   reader.readAsDataURL(e.target.files[0]);
   // };
-
 
   // function updateTshirtImage(e) {
   //   console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYY")
@@ -118,7 +121,7 @@ function App() {
         type="file"
         multiple
         id="tshirt-custompicture"
-        onChange={(e) => myfun(e)}
+        onChange={(e) => imageUpload(e)}
       />
     </div>
   );
