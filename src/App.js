@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import "./App.css";
 import image1 from "./background_tshirt.png";
@@ -7,9 +7,38 @@ import image2 from "./gallery1.png";
 import { fabric } from "fabric";
 function App() {
   let canvRef = useRef(null);
+  let [get, set] = useState([]);
+  useEffect(() => {
+    console.log(get.length);
+
+    if (get.length > 0) {
+      let c = [1, 2];
+
+        var canvas = new fabric.Canvas(canvRef.current);
+
+        canvas.setHeight(400);
+        canvas.setWidth(200);
 
 
-// for changing color
+              canvas
+                .getContext("2d")
+                .clearRect(0, 0, canvas.width, canvas.height);
+
+      console.log(get.length);
+      for (let i = 0; i < get.length; i++) {
+        console.log(i, "iiiii");
+        fabric.Image.fromURL(get[i], function (img) {
+          img.scaleToHeight(100);
+          img.scaleToWidth(100);
+
+          canvas.add(img);
+        });
+      }
+      canvas.add(new fabric.Text("really"));
+      canvas.renderAll();
+    }
+  }, [get]);
+  // for changing color
   function mycolor(e) {
     console.log("bhaiiiiiiiii");
     console.log(e.target.value);
@@ -18,70 +47,21 @@ function App() {
   }
 
   //creating canvas reference
-  let canvas = new fabric.Canvas(canvRef.current);
-  
+
   //uploading image
-  async function imageUpload(e) {
+  function imageUpload(e) {
+    
     var reader = new FileReader();
-    reader.onload = function (event) {
-      var imgObj = new Image();
-      imgObj.src = event.target.result;
-      imgObj.onload = function () {
-        var image = new fabric.Image(imgObj);
-        image.set({
-          angle: 0,
-          padding: 10,
-          cornersize: 10,
-          height: 110,
-          width: 110,
-        });
-        canvas.centerObject(image);
-        canvas.add(image);
-        canvas.renderAll();
-        console.log("last");
-      };
+    reader.onload = async function (event) {
+      var imgObj = await new Image();
+      imgObj.src = await event.target.result;
+      set([...get, imgObj.src]);
+      
     };
-    reader.readAsDataURL(e.target.files[0]);
+    let p = e.target.files[0];
+
+    reader.readAsDataURL(p);
   }
-
-  //upload image
-
-  // document.getElementById("imgLoader").onchange = function handleImage(e) {
-  //   var reader = new FileReader();
-  //   reader.onload = function (event) {
-  //     var imgObj = new Image();
-  //     imgObj.src = event.target.result;
-  //     imgObj.onload = function () {
-  //       var image = new fabric.Image(imgObj);
-  //       image.set({
-  //         angle: 0,
-  //         padding: 10,
-  //         cornersize: 10,
-  //         height: 110,
-  //         width: 110,
-  //       });
-  //       canvas.centerObject(image);
-  //       canvas.add(image);
-  //       canvas.renderAll();
-  //     };
-  //   };
-  //   reader.readAsDataURL(e.target.files[0]);
-  // };
-
-  // function updateTshirtImage(e) {
-  //   console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYY")
-  //   console.log(e.target.value);
-  //   let imageURL= e.target.value;
-  //   console.log(e.target.value,"hhhhhhhhh");
-
-  //   fabric.Image.fromURL(imageURL, function (img) {
-  //     img.scaleToHeight(300);
-  //     img.scaleToWidth(300);
-  //     canvas.centerObject(img);
-  //     canvas.add(img);
-  //     canvas.renderAll();
-  //   });
-  // }
 
   return (
     <div className="App">
@@ -101,11 +81,6 @@ function App() {
           </div>
         </div>
       </div>
-      {/* 
-      <select id="tshirt-design" onChange={(e) => updateTshirtImage(e)}>
-        <option value="testt">Select one of our designs ...</option>
-        <option value={image2}>Batman</option>
-      </select> */}
 
       <label>T-Shirt Color:</label>
       <select id="tshirt-color" onChange={(e) => mycolor(e)}>
