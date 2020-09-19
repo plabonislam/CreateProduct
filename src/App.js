@@ -8,21 +8,17 @@ import { fabric } from "fabric";
 function App() {
   let canvRef = useRef(null);
   let [get, set] = useState([]);
+
   useEffect(() => {
     console.log(get.length);
 
     if (get.length > 0) {
-      let c = [1, 2];
+      var canvas = new fabric.Canvas(canvRef.current);
 
-        var canvas = new fabric.Canvas(canvRef.current);
-
-        canvas.setHeight(400);
+      if (get.length > 1) {
+        canvas.setHeight(300);
         canvas.setWidth(200);
-
-
-              canvas
-                .getContext("2d")
-                .clearRect(0, 0, canvas.width, canvas.height);
+      }
 
       console.log(get.length);
       for (let i = 0; i < get.length; i++) {
@@ -30,7 +26,9 @@ function App() {
         fabric.Image.fromURL(get[i], function (img) {
           img.scaleToHeight(100);
           img.scaleToWidth(100);
-
+          if (get.length > 1) {
+            canvas.centerObject(img);
+          }
           canvas.add(img);
         });
       }
@@ -50,13 +48,11 @@ function App() {
 
   //uploading image
   function imageUpload(e) {
-    
     var reader = new FileReader();
     reader.onload = async function (event) {
       var imgObj = await new Image();
       imgObj.src = await event.target.result;
       set([...get, imgObj.src]);
-      
     };
     let p = e.target.files[0];
 
