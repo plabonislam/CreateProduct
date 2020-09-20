@@ -9,49 +9,40 @@ import { fabric } from "fabric";
 function App() {
   let canvRef = useRef(null);
   let [get, set] = useState([]);
+  let [getText, setText] = useState([]);
+ var canvas;
+  //clear canvas each time new object added
+  const clearCanvas = () => {
+    let pp = document.getElementsByTagName("canvas");
+    console.log("pp", pp.length);
+    for (let i = 1; i < pp.length; i++) {
+      console.log(pp[i], "", i);
+      pp[i].remove();
+    }
+  };
 
+  //on adding image from dropdown this image this section works
   useEffect(() => {
-    console.log(get.length);
+    clearCanvas(); //clear canvas
 
     if (get.length > 0) {
-      if (get.length > 1) {
-        let pp = document.getElementsByTagName("canvas");
-        console.log("pp", pp.length);
-        for (let i = 1; i < pp.length; i++) {
-          console.log(pp[i], "", i);
-          pp[i].remove();
-        }
-      }
-      var canvas = new fabric.Canvas("test");
+       canvas = new fabric.Canvas("test");
       canvas.setHeight(400);
       canvas.setWidth(200);
       console.log(get.length);
-      for (let i = 0; i < get.length; i++) {
-        console.log(i, "iiiii");
-        fabric.Image.fromURL(get[i], function (img) {
-          img.scaleToHeight(100);
-          img.scaleToWidth(100);
-          if (get.length > 0) {
-            canvas.centerObject(img);
-          }
-          canvas.add(img);
-        });
+
+      drawImage(canvas);
+
+      if (getText.length > 0) {
+        for (let i = 0; i < getText.length; i++) {
+          canvas.add(new fabric.Text(getText[i]));
+        }
       }
-      canvas.add(new fabric.Text("really"));
       canvas.renderAll();
     }
   }, [get]);
-  // for changing color
-  function mycolor(e) {
-    console.log("bhaiiiiiiiii");
-    console.log(e.target.value);
-    document.getElementById("tshirt-div").style.backgroundColor =
-      e.target.value;
-  }
 
-  //creating canvas reference
-
-  //uploading image
+  //uploading image saved in state
   function imageUpload(e) {
     var reader = new FileReader();
     reader.onload = async function (event) {
@@ -64,12 +55,73 @@ function App() {
     reader.readAsDataURL(p);
   }
 
+  //onchange if text this section works
+  useEffect(() => {
+    clearCanvas();
+
+    if (getText.length > 0) {
+       canvas = new fabric.Canvas(canvRef.current);
+      canvas.setHeight(400);
+      canvas.setWidth(200);
+
+      for (let i = 0; i < getText.length; i++) {
+        canvas.add(new fabric.Text(getText[i]));
+      }
+
+      if (get.length > 0) {
+        drawImage(canvas);
+      }
+    }
+  }, [getText]);
+
+  // draw image based on saved value
+  const drawImage = (canvas) => {
+    for (let i = 0; i < get.length; i++) {
+      fabric.Image.fromURL(get[i], function (img) {
+        img.scaleToHeight(100);
+        img.scaleToWidth(100);
+        if (get.length > 0) {
+          canvas.centerObject(img);
+        }
+        canvas.add(img);
+      });
+    }
+    canvas.renderAll();
+  };
+
+  // for changing color
+  function mycolor(e) {
+    console.log("bhaiiiiiiiii");
+    console.log(e.target.value);
+    document.getElementById("tshirt-div").style.backgroundColor =
+      e.target.value;
+  }
+
+  //text is saved for state
+  const handleText = () => {
+    let value = document.getElementById("text").value;
+    document.getElementById("text").value = "";
+    console.log(value, "PPPPPPPPPPPP");
+
+    setText([...getText, value]);
+  };
+
+
+
+  const deleteItem=(e)=>{
+
+console.log("myyyyyyy")
+  }
   return (
     <div className="App">
       <div id="tshirt-div">
         <img id="tshirt-backgroundpicture" src={image1} />
 
-        <div id="drawingArea" className="drawing-area">
+        <div
+          id="drawingArea"
+          className="drawing-area"
+          onKeyPress={(e) => deleteItem(e)}
+        >
           <div className="canvas-container">
             <canvas
               ref={canvRef}
@@ -100,6 +152,11 @@ function App() {
         id="tshirt-custompicture"
         onChange={(e) => imageUpload(e)}
       />
+
+      <div style={{ margin: "10px" }}>
+        <input type="text" id="text" placeholder="type your text" />
+        <button onClick={handleText}> Submit Text</button>
+      </div>
     </div>
   );
 }
