@@ -112,6 +112,19 @@ function App() {
 
 console.log("myyyyyyy")
   }
+
+
+  function download() {
+    let pl=canvRef.current;
+    
+   pl= pl.toDataURL();
+  
+    console.log(pl)
+    let image=document.createElement("img");
+    image.src=pl
+    image.style.border="1px solid red"
+ document.querySelector(".App").appendChild(image);
+  }
   return (
     <div className="App">
       <div id="tshirt-div">
@@ -156,6 +169,14 @@ console.log("myyyyyyy")
       <div style={{ margin: "10px" }}>
         <input type="text" id="text" placeholder="type your text" />
         <button onClick={handleText}> Submit Text</button>
+      </div>
+      <img  id="show"/>
+      <div>
+        
+          <button type="button" onClick={download}>
+            Download
+          </button>
+        
       </div>
     </div>
   );
