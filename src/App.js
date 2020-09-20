@@ -5,6 +5,7 @@ import image1 from "./background_tshirt.png";
 import image2 from "./gallery1.png";
 
 import { fabric } from "fabric";
+
 function App() {
   let canvRef = useRef(null);
   let [get, set] = useState([]);
@@ -13,20 +14,24 @@ function App() {
     console.log(get.length);
 
     if (get.length > 0) {
-      var canvas = new fabric.Canvas(canvRef.current);
-
       if (get.length > 1) {
-        canvas.setHeight(300);
-        canvas.setWidth(200);
+        let pp = document.getElementsByTagName("canvas");
+        console.log("pp", pp.length);
+        for (let i = 1; i < pp.length; i++) {
+          console.log(pp[i], "", i);
+          pp[i].remove();
+        }
       }
-
+      var canvas = new fabric.Canvas("test");
+      canvas.setHeight(400);
+      canvas.setWidth(200);
       console.log(get.length);
       for (let i = 0; i < get.length; i++) {
         console.log(i, "iiiii");
         fabric.Image.fromURL(get[i], function (img) {
           img.scaleToHeight(100);
           img.scaleToWidth(100);
-          if (get.length > 1) {
+          if (get.length > 0) {
             canvas.centerObject(img);
           }
           canvas.add(img);
@@ -68,6 +73,7 @@ function App() {
           <div className="canvas-container">
             <canvas
               ref={canvRef}
+              id="test"
               style={{
                 height: "400px",
                 width: "200px",
