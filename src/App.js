@@ -8,8 +8,9 @@ import { fabric } from "fabric";
 
 function App() {
   let canvRef = useRef(null);
-  let [get, set] = useState([]);
+  let [getImage, setImage] = useState([]);
   let [getText, setText] = useState([]);
+  let [getColor, setColor] = useState("#fff");
   var canvas;
   //clear canvas each time new object added
   const clearCanvas = () => {
@@ -25,11 +26,10 @@ function App() {
   useEffect(() => {
     clearCanvas(); //clear canvas
 
-    if (get.length > 0) {
+    if (getImage.length > 0) {
       canvas = new fabric.Canvas("test");
       canvas.setHeight(400);
       canvas.setWidth(200);
-      console.log(get.length);
 
       drawImage(canvas);
 
@@ -40,7 +40,7 @@ function App() {
       }
       canvas.renderAll();
     }
-  }, [get]);
+  }, [getImage]);
 
   //uploading image saved in state
   function imageUpload(e) {
@@ -48,7 +48,7 @@ function App() {
     reader.onload = async function (event) {
       var imgObj = await new Image();
       imgObj.src = await event.target.result;
-      set([...get, imgObj.src]);
+      setImage([...getImage, imgObj.src]);
     };
     let p = e.target.files[0];
 
@@ -63,12 +63,21 @@ function App() {
       canvas = new fabric.Canvas(canvRef.current);
       canvas.setHeight(400);
       canvas.setWidth(200);
-
+      let setNewColor = "black";
+      if (getColor === "#000") {
+        setNewColor = "#f00";
+      }
       for (let i = 0; i < getText.length; i++) {
-        canvas.add(new fabric.Text(getText[i]));
+        canvas.add(
+          new fabric.Text(getText[i], {
+            left: 50,
+            top: 50,
+            fill: setNewColor,
+          })
+        );
       }
 
-      if (get.length > 0) {
+      if (getImage.length > 0) {
         drawImage(canvas);
       }
     }
@@ -76,11 +85,11 @@ function App() {
 
   // draw image based on saved value
   const drawImage = (canvas) => {
-    for (let i = 0; i < get.length; i++) {
-      fabric.Image.fromURL(get[i], function (img) {
+    for (let i = 0; i < getImage.length; i++) {
+      fabric.Image.fromURL(getImage[i], function (img) {
         img.scaleToHeight(100);
         img.scaleToWidth(100);
-        if (get.length > 0) {
+        if (getImage.length > 0) {
           canvas.centerObject(img);
         }
         canvas.add(img);
@@ -91,10 +100,9 @@ function App() {
 
   // for changing color
   function mycolor(e) {
-    console.log("bhaiiiiiiiii");
-    console.log(e.target.value);
     document.getElementById("tshirt-div").style.backgroundColor =
       e.target.value;
+    setColor(e.target.value);
   }
 
   //text is saved for state
@@ -112,7 +120,7 @@ function App() {
 
   function display() {
     let pl = canvRef.current;
-
+    console.log(getColor);
     pl = pl.toDataURL();
 
     console.log(pl);
@@ -123,7 +131,7 @@ function App() {
   }
   return (
     <div className="App">
-      <div id="tshirt-div">
+      <div id="tshirt-div" style={{ margin: "10px" }}>
         <img id="tshirt-backgroundpicture" src={image1} />
 
         <div
@@ -145,33 +153,47 @@ function App() {
         </div>
       </div>
 
-      <label>T-Shirt Color:</label>
-      <select id="tshirt-color" onChange={(e) => mycolor(e)}>
-        <option value="#fff">White</option>
-        <option value="#000">Black</option>
-        <option value="#f00">Red</option>
-        <option value="#008000">Green</option>
-        <option value="#ff0">Yellow</option>
-      </select>
+      <div style={{ margin: "10px" }}>
+        <label>T-Shirt Color:</label>
+        <select id="tshirt-color" onChange={(e) => mycolor(e)}>
+          <option value="#fff">White</option>
+          <option value="#000">Black</option>
+          <option value="#f00">Red</option>
+          <option value="#008000">Green</option>
+          <option value="#ff0">Yellow</option>
+        </select>
+      </div>
 
-      <label>Upload your own design:</label>
-      <input
-        type="file"
-        multiple
-        id="tshirt-custompicture"
-        onChange={(e) => imageUpload(e)}
-      />
+      <div style={{ margin: "10px" }}>
+        <label>Upload image</label>
+        <input
+          type="file"
+          multiple
+          id="tshirt-custompicture"
+          onChange={(e) => imageUpload(e)}
+        />
+      </div>
 
       <div style={{ margin: "10px" }}>
         <input type="text" id="text" placeholder="type your text" />
         <button onClick={handleText}> Submit Text</button>
       </div>
-      <img id="show" />
-      <div>
-        <button type="button" onClick={download}>
-          Download
+
+      <div style={{ margin: "10px" }}>
+        <button type="button" onClick={display}>
+          Display
         </button>
       </div>
+      {/* <div style={{ margin: "10px" }}>
+        <label>Select your Text color:</label>
+        <input
+          type="color"
+          id="favcolor"
+          name="favcolor"
+         
+        ></input>
+  
+      </div> */}
     </div>
   );
 }
