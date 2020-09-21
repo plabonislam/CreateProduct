@@ -10,12 +10,14 @@ function App() {
   let canvRef = useRef(null);
   let [get, set] = useState([]);
   let [getText, setText] = useState([]);
-  var canvas;
+  var canvas = new fabric.Canvas(canvRef.current);
+   canvas.setHeight(400);
+   canvas.setWidth(200);
   //clear canvas each time new object added
   const clearCanvas = () => {
     let pp = document.getElementsByTagName("canvas");
     console.log("pp", pp.length);
-    for (let i = 1; i < pp.length; i++) {
+    for (let i = 1; i < pp.length-1; i++) {
       console.log(pp[i], "", i);
       pp[i].remove();
     }
@@ -26,9 +28,7 @@ function App() {
     clearCanvas(); //clear canvas
 
     if (get.length > 0) {
-      canvas = new fabric.Canvas("test");
-      canvas.setHeight(400);
-      canvas.setWidth(200);
+     
       console.log(get.length);
 
       drawImage(canvas);
@@ -60,9 +60,7 @@ function App() {
     clearCanvas();
 
     if (getText.length > 0) {
-      canvas = new fabric.Canvas(canvRef.current);
-      canvas.setHeight(400);
-      canvas.setWidth(200);
+    
 
       for (let i = 0; i < getText.length; i++) {
         canvas.add(new fabric.Text(getText[i]));
@@ -168,7 +166,7 @@ function App() {
       </div>
       <img id="show" />
       <div>
-        <button type="button" onClick={download}>
+        <button type="button" onClick={display}>
           Download
         </button>
       </div>
