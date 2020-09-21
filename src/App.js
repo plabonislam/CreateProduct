@@ -10,7 +10,7 @@ function App() {
   let canvRef = useRef(null);
   let [get, set] = useState([]);
   let [getText, setText] = useState([]);
- var canvas;
+  var canvas;
   //clear canvas each time new object added
   const clearCanvas = () => {
     let pp = document.getElementsByTagName("canvas");
@@ -26,7 +26,7 @@ function App() {
     clearCanvas(); //clear canvas
 
     if (get.length > 0) {
-       canvas = new fabric.Canvas("test");
+      canvas = new fabric.Canvas("test");
       canvas.setHeight(400);
       canvas.setWidth(200);
       console.log(get.length);
@@ -60,7 +60,7 @@ function App() {
     clearCanvas();
 
     if (getText.length > 0) {
-       canvas = new fabric.Canvas(canvRef.current);
+      canvas = new fabric.Canvas(canvRef.current);
       canvas.setHeight(400);
       canvas.setWidth(200);
 
@@ -106,24 +106,20 @@ function App() {
     setText([...getText, value]);
   };
 
+  const deleteItem = (e) => {
+    console.log("myyyyyyy");
+  };
 
+  function display() {
+    let pl = canvRef.current;
 
-  const deleteItem=(e)=>{
+    pl = pl.toDataURL();
 
-console.log("myyyyyyy")
-  }
-
-
-  function download() {
-    let pl=canvRef.current;
-    
-   pl= pl.toDataURL();
-  
-    console.log(pl)
-    let image=document.createElement("img");
-    image.src=pl
-    image.style.border="1px solid red"
- document.querySelector(".App").appendChild(image);
+    console.log(pl);
+    let image = document.createElement("img");
+    image.src = pl;
+    image.style.border = "1px solid red";
+    document.querySelector(".App").appendChild(image);
   }
   return (
     <div className="App">
@@ -170,13 +166,11 @@ console.log("myyyyyyy")
         <input type="text" id="text" placeholder="type your text" />
         <button onClick={handleText}> Submit Text</button>
       </div>
-      <img  id="show"/>
+      <img id="show" />
       <div>
-        
-          <button type="button" onClick={download}>
-            Download
-          </button>
-        
+        <button type="button" onClick={download}>
+          Download
+        </button>
       </div>
     </div>
   );
